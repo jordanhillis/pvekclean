@@ -1,6 +1,6 @@
 ![PVEKCLEAN Logo](https://jordanhillis.com/images/github/pvekclean/pvekclean_banner.png)
 <div style="text-align:center;padding:0px;;">
-Easily remove old/unused PVE kernels on your system
+Easily remove old/unused PVE kernels on your Proxmox VE system
 </div>
 
 ### What is PVE Kernel Cleaner?
@@ -14,7 +14,7 @@ PVE Kernel Cleaner is a program to compliment Proxmox Virtual Environment which 
 ## Features
 
 * Removes old PVE kernels from your system
-* Abilitiy to schedule PVE kernels to automatically be removed on a daily/weekly/monthly basis
+* Ability to schedule PVE kernels to automatically be removed on a daily/weekly/monthly basis
 * Run a simple pvekclean command for ease of access
 * Support for the latest Proxmox versions and PVE kernels
 
