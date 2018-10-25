@@ -30,6 +30,9 @@ SOFTWARE.
 ______________________________________________
 '
 
+# Percentage of used space in the /boot which would considered it critically full
+boot_critical_percent="80"
+
 # Current kernel
 current_kernel=$(uname -r)
 
@@ -37,7 +40,7 @@ current_kernel=$(uname -r)
 program_name="pvekclean"
 
 # Version
-version="1.0"
+version="1.1"
 
 # Check if force removal argument is added
 if [ "$1" == "-f" ] || [ "$1" == "--force" ]; then
@@ -81,11 +84,33 @@ function kernel_info {
 	latest_kernel=$(dpkg --list| grep 'pve-kernel-.*-pve' | awk '{print $2}' | tac | head -n 1)
 	# Show operating system used
 	printf "OS: $(cat /etc/os-release | grep "PRETTY_NAME" | sed 's/PRETTY_NAME=//g' | sed 's/["]//g' | awk '{print $0}')\n"
+	# Get information about the /boot folder
+	boot_info=($(echo $(df -Ph /boot | tail -1) | sed 's/%//g'))
+	# Show information about the /boot
+	printf "Boot Disk: ${boot_info[4]}%% full [${boot_info[2]}/${boot_info[1]} used, ${boot_info[3]} free] \n"
 	# Show current kernel in use
 	printf "Current Kernel: pve-kernel-$current_kernel\n"
-	# Check if we are running the latest kernel, if not warn
-	if [[ "$latest_kernel" != *"$current_kernel"* ]]; then
-		printf "Latest Kernel: $latest_kernel\n"
+	# Check if they are running a PVE kernel
+	if [[ "$current_kernel" == *"pve"* ]]; then
+		# Check if we are running the latest kernel, if not warn
+		if [[ "$latest_kernel" != *"$current_kernel"* ]]; then
+			printf "Latest Kernel: $latest_kernel\n"
+		fi
+	# Warn them that they aren't on a PVE kernel
+	else
+		printf "___________________________________________\n\n"
+		printf "[!] Warning, you're not running a PVE kernel\n"
+		# Ask them if they want to continue
+		read -p "[*] Would you like to continue [y/N] " -n 1 -r
+		printf "\n"
+		if [[ $REPLY =~ ^[Yy]$ ]]; then
+			# Continue on if they wish
+			printf "[-] Alright, we will continue on\n"
+		else
+			# Exit script
+			printf "\nGood bye!\n"
+			exit 1
+		fi
 	fi
 	printf "___________________________________________\n\n"
 }
@@ -186,7 +211,7 @@ function install_program(){
 		# User agrees to have it installed
 		if [[ $REPLY =~ ^[Yy]$ ]]; then
 			# Copy the script to /usr/local/sbin and set execution permissions
-			cp $(basename $0) /usr/local/sbin/$program_name
+			cp $0 /usr/local/sbin/$program_name
 			chmod +x /usr/local/sbin/$program_name
 			# Tell user how to use it
 			printf "[*] Installed PVE Kernel Cleaner to /usr/local/sbin/$program_name\n"
@@ -226,6 +251,17 @@ function pve_kernel_clean {
 	kernels=$(dpkg --list| grep 'pve-kernel-.*-pve' | awk '{print $2}')
 	# List of kernels that will be removed (adds them as the script goes on)
 	kernels_to_remove=""
+	# Check the /boot used
+	printf "[*] Boot disk space used is "
+	# Warn user when the /boot is critically full
+	if [[ "${boot_info[4]}" -ge "$boot_critical_percent" ]]; then
+		printf "critically full "
+	# Tell them if it is at an acceptable percentage
+	else
+		printf "healthy "
+	fi
+	# Display percentage used and avaialbe space left
+	printf "at ${boot_info[4]}%% capacity (${boot_info[3]} free)\n"
 	printf "[-] Searching for old PVE kernels on your system...\n"
 	# For each kernel that was found via dpkg
 	for kernel in $kernels
