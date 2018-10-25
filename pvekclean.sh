@@ -30,7 +30,7 @@ SOFTWARE.
 ______________________________________________
 '
 
-# Percentage of used space in the /boot which would considered it critically full
+# Percentage of used space in the /boot which would consider it critically full
 boot_critical_percent="80"
 
 # Current kernel
@@ -260,7 +260,7 @@ function pve_kernel_clean {
 	else
 		printf "healthy "
 	fi
-	# Display percentage used and avaialbe space left
+	# Display percentage used and available space left
 	printf "at ${boot_info[4]}%% capacity (${boot_info[3]} free)\n"
 	printf "[-] Searching for old PVE kernels on your system...\n"
 	# For each kernel that was found via dpkg
