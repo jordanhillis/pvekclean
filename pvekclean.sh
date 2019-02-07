@@ -40,7 +40,7 @@ current_kernel=$(uname -r)
 program_name="pvekclean"
 
 # Version
-version="1.1"
+version="1.2"
 
 # Check if force removal argument is added
 if [ "$1" == "-f" ] || [ "$1" == "--force" ]; then
@@ -248,7 +248,7 @@ function uninstall_program(){
 # PVE Kernel Clean main function
 function pve_kernel_clean {
 	# Find all the PVE kernels on the system
-	kernels=$(dpkg --list| grep 'pve-kernel-.*-pve' | awk '{print $2}')
+	kernels=$(dpkg --list| grep 'pve-kernel-.*-pve' | awk '{print $2}' | sort -V)
 	# List of kernels that will be removed (adds them as the script goes on)
 	kernels_to_remove=""
 	# Check the /boot used
