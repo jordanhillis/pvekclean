@@ -23,7 +23,7 @@ PVE Kernel Cleaner is a program to compliment Proxmox Virtual Environment which 
 
 ## Latest Version
 
-* v1.1
+* v1.2
 
 ## Prerequisites
 
