@@ -50,21 +50,21 @@ else
 fi
 
 # Check if script is ran as root, if not exit
-function check_root {
+function check_root() {
 	if [[ $EUID -ne 0 ]]; then
-		printf "[!] Error: this script must be ran as the root user.\n" 
+		printf "[!] Error: this script must be ran as the root user.\n"
 		exit 1
 	fi
 }
 
 # Shown current version
-function version(){
-  printf $version"\n"
-  exit 1
+function version() {
+	printf $version"\n"
+	exit 1
 }
 
 # Header for PVE Kernel Cleaner
-function header_info {
+function header_info() {
 echo -e "
 █▀▀█ ▀█ █▀ █▀▀   █ █ █▀▀ █▀▀█ █▀▀▄ █▀▀ █   
 █  █  █▄█  █▀▀   █▀▄ █▀▀ █▄▄▀ █  █ █▀▀ █     
@@ -79,13 +79,13 @@ ___________________________________________
 }
 
 # Show current system information
-function kernel_info {
+function kernel_info() {
 	# Lastest kernel installed
-	latest_kernel=$(dpkg --list| grep 'pve-kernel-.*-pve' | awk '{print $2}' | tac | head -n 1)
+	latest_kernel=$(dpkg --list| awk '/pve-kernel-.*-pve/ {print $2}' | tac | head -n 1)
 	# Show operating system used
-	printf "OS: $(cat /etc/os-release | grep "PRETTY_NAME" | sed 's/PRETTY_NAME=//g' | sed 's/["]//g' | awk '{print $0}')\n"
+	printf "OS: $(grep "PRETTY_NAME" /etc/os-release | sed -e 's/PRETTY_NAME=//g' -e 's/["]//g' | awk '{print $0}')\n"
 	# Get information about the /boot folder
-	boot_info=($(echo $(df -Ph /boot | tail -1) | sed 's/%//g'))
+	boot_info=($(df -Ph /boot | tail -1 | sed 's/%//g'))
 	# Show information about the /boot
 	printf "Boot Disk: ${boot_info[4]}%% full [${boot_info[2]}/${boot_info[1]} used, ${boot_info[3]} free] \n"
 	# Show current kernel in use
@@ -116,7 +116,7 @@ function kernel_info {
 }
 
 # Usage information on how to use PVE Kernel Clean
-function show_usage {
+function show_usage() {
 	# Skip showing usage when force_purge is enabled
 	if [ $force_purge == false ]; then
 		printf "Usage: $(basename $0) [OPTION]\n\n"
@@ -129,24 +129,24 @@ function show_usage {
 }
 
 # Schedule PVE Kernel Cleaner at a time desired
-function scheduler(){
+function scheduler() {
 	# Check if pvekclean is on the system, if not exit
 	if [ ! -f /usr/local/sbin/$program_name ]; then
 		printf "[!] Sorry $program_name is required to be installed on the system for this functionality.\n"
 		exit 1
 	fi
 	# Check if cron is installed
-    if ! [ -x "$(command -v crontab)" ]; then
-      printf "[*] Error, cron does not appear to be installed.\n"
-      printf "    Please install cron with the command 'sudo apt-get install cron'\n\n"
-      exit 1
-    fi
+	if ! [ -x "$(command -v crontab)" ]; then
+		printf "[*] Error, cron does not appear to be installed.\n"
+		printf "    Please install cron with the command 'sudo apt-get install cron'\n\n"
+		exit 1
+	fi
 	# Check if the cronjob exists on the system
 	check_cron_exists=$(crontab -l | grep "$program_name")
 	# Cronjob exists
 	if [ -n "$check_cron_exists" ]; then
-		# Get the current cronjob scheduling 
-		cron_current=$(crontab -l | grep "$program_name" | sed "s/[^a-zA-Z']/ /g" | sed -e "s/\b\(.\)/\u\1/g" | awk '{print $1;}')
+		# Get the current cronjob scheduling
+		cron_current=$(crontab -l | grep "$program_name" | sed -e "s/[^a-zA-Z']/ /g" -e "s/\b\(.\)/\u\1/g" | awk '{print $1;}')
 		# Ask the user if they would like to remove the scheduling
 		read -p "[-] Would you like to remove the currently scheduled PVE Kernel Cleaner? (Current: $cron_current) [y/N] " -n 1 -r
 		if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -185,7 +185,7 @@ function scheduler(){
 }
 
 # Installs PVE Kernel Cleaner for easier access
-function install_program(){
+function install_program() {
 	force_pvekclean_update=false
 	# If pvekclean exists on the system
 	if [ -e /usr/local/sbin/$program_name ]; then
@@ -223,7 +223,7 @@ function install_program(){
 }
 
 # Uninstall pvekclean from the system
-function uninstall_program(){
+function uninstall_program() {
 	# If pvekclean exists on the system
 	if [ -e /usr/local/sbin/$program_name ]; then
 		# Confirm that they wish to remove it
@@ -246,9 +246,9 @@ function uninstall_program(){
 }
 
 # PVE Kernel Clean main function
-function pve_kernel_clean {
+function pve_kernel_clean() {
 	# Find all the PVE kernels on the system
-	kernels=$(dpkg --list| grep 'pve-kernel-.*-pve' | awk '{print $2}' | sort -V)
+	kernels=$(dpkg --list| awk '/pve-kernel-.*-pve/ {print $2}' | sort -V)
 	# List of kernels that will be removed (adds them as the script goes on)
 	kernels_to_remove=""
 	# Check the /boot used
@@ -267,7 +267,7 @@ function pve_kernel_clean {
 	for kernel in $kernels
 	do
 		# If the kernel listed from dpkg is our current then break
-		if [ "$(echo $kernel | grep $current_kernel)" ]; then
+		if echo $kernel | grep -q $current_kernel; then
 			break
 		# Add kernel to the list of removal since it is old
 		else
@@ -310,7 +310,7 @@ function pve_kernel_clean {
 	fi
 }
 
-function main {
+function main() {
 	# Check for root
 	check_root
 	# Show header information
@@ -345,6 +345,6 @@ while true; do
 			pve_kernel_clean
 			exit 1
 		;;
-    esac
-    shift
+	esac
+	shift
 done
