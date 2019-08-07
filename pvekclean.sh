@@ -59,8 +59,8 @@ function check_root() {
 
 # Shown current version
 function version() {
-  printf $version"\n"
-  exit 1
+	printf $version"\n"
+	exit 1
 }
 
 # Header for PVE Kernel Cleaner
@@ -136,11 +136,11 @@ function scheduler() {
 		exit 1
 	fi
 	# Check if cron is installed
-    if ! [ -x "$(command -v crontab)" ]; then
-      printf "[*] Error, cron does not appear to be installed.\n"
-      printf "    Please install cron with the command 'sudo apt-get install cron'\n\n"
-      exit 1
-    fi
+	if ! [ -x "$(command -v crontab)" ]; then
+		printf "[*] Error, cron does not appear to be installed.\n"
+		printf "    Please install cron with the command 'sudo apt-get install cron'\n\n"
+		exit 1
+	fi
 	# Check if the cronjob exists on the system
 	check_cron_exists=$(crontab -l | grep "$program_name")
 	# Cronjob exists
@@ -345,6 +345,6 @@ while true; do
 			pve_kernel_clean
 			exit 1
 		;;
-    esac
-    shift
+	esac
+	shift
 done
