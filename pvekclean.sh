@@ -50,7 +50,7 @@ else
 fi
 
 # Check if script is ran as root, if not exit
-function check_root {
+function check_root() {
 	if [[ $EUID -ne 0 ]]; then
 		printf "[!] Error: this script must be ran as the root user.\n" 
 		exit 1
@@ -58,13 +58,13 @@ function check_root {
 }
 
 # Shown current version
-function version(){
+function version() {
   printf $version"\n"
   exit 1
 }
 
 # Header for PVE Kernel Cleaner
-function header_info {
+function header_info() {
 echo -e "
 █▀▀█ ▀█ █▀ █▀▀   █ █ █▀▀ █▀▀█ █▀▀▄ █▀▀ █   
 █  █  █▄█  █▀▀   █▀▄ █▀▀ █▄▄▀ █  █ █▀▀ █     
@@ -79,7 +79,7 @@ ___________________________________________
 }
 
 # Show current system information
-function kernel_info {
+function kernel_info() {
 	# Lastest kernel installed
 	latest_kernel=$(dpkg --list| awk '/pve-kernel-.*-pve/ {print $2}' | tac | head -n 1)
 	# Show operating system used
@@ -116,7 +116,7 @@ function kernel_info {
 }
 
 # Usage information on how to use PVE Kernel Clean
-function show_usage {
+function show_usage() {
 	# Skip showing usage when force_purge is enabled
 	if [ $force_purge == false ]; then
 		printf "Usage: $(basename $0) [OPTION]\n\n"
@@ -129,7 +129,7 @@ function show_usage {
 }
 
 # Schedule PVE Kernel Cleaner at a time desired
-function scheduler(){
+function scheduler() {
 	# Check if pvekclean is on the system, if not exit
 	if [ ! -f /usr/local/sbin/$program_name ]; then
 		printf "[!] Sorry $program_name is required to be installed on the system for this functionality.\n"
@@ -185,7 +185,7 @@ function scheduler(){
 }
 
 # Installs PVE Kernel Cleaner for easier access
-function install_program(){
+function install_program() {
 	force_pvekclean_update=false
 	# If pvekclean exists on the system
 	if [ -e /usr/local/sbin/$program_name ]; then
@@ -223,7 +223,7 @@ function install_program(){
 }
 
 # Uninstall pvekclean from the system
-function uninstall_program(){
+function uninstall_program() {
 	# If pvekclean exists on the system
 	if [ -e /usr/local/sbin/$program_name ]; then
 		# Confirm that they wish to remove it
@@ -246,7 +246,7 @@ function uninstall_program(){
 }
 
 # PVE Kernel Clean main function
-function pve_kernel_clean {
+function pve_kernel_clean() {
 	# Find all the PVE kernels on the system
 	kernels=$(dpkg --list| awk '/pve-kernel-.*-pve/ {print $2}' | sort -V)
 	# List of kernels that will be removed (adds them as the script goes on)
@@ -310,7 +310,7 @@ function pve_kernel_clean {
 	fi
 }
 
-function main {
+function main() {
 	# Check for root
 	check_root
 	# Show header information
