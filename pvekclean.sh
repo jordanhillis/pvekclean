@@ -52,7 +52,7 @@ fi
 # Check if script is ran as root, if not exit
 function check_root() {
 	if [[ $EUID -ne 0 ]]; then
-		printf "[!] Error: this script must be ran as the root user.\n" 
+		printf "[!] Error: this script must be ran as the root user.\n"
 		exit 1
 	fi
 }
@@ -145,7 +145,7 @@ function scheduler() {
 	check_cron_exists=$(crontab -l | grep "$program_name")
 	# Cronjob exists
 	if [ -n "$check_cron_exists" ]; then
-		# Get the current cronjob scheduling 
+		# Get the current cronjob scheduling
 		cron_current=$(crontab -l | grep "$program_name" | sed -e "s/[^a-zA-Z']/ /g" -e "s/\b\(.\)/\u\1/g" | awk '{print $1;}')
 		# Ask the user if they would like to remove the scheduling
 		read -p "[-] Would you like to remove the currently scheduled PVE Kernel Cleaner? (Current: $cron_current) [y/N] " -n 1 -r
