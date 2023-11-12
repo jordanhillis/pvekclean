@@ -19,11 +19,14 @@ PVE Kernel Cleaner is a program to compliment Proxmox Virtual Environment which 
 * Ability to schedule PVE kernels to automatically be removed on a daily/weekly/monthly basis
 * Run a simple pvekclean command for ease of access
 * Checks health of boot disk based on space available
+* Debug mode for non-destructive testing
+* Update function to easily update the program to the latest version
+* Allows you to specify the minimum number of most recent PVE kernels to retain
 * Support for the latest Proxmox versions and PVE kernels
 
 ## Latest Version
 
-* v1.2
+* v1.3
 
 ## Prerequisites
 
@@ -58,13 +61,17 @@ To update PVE Kernel Cleaner please run the same commands as described in the "I
 
 Example of usage:
 ```
- pvekclean [OPTION]
+ pvekclean [OPTION1] [OPTION2]...
 
--f		--force				Remove all old PVE kernels without confirm prompts
--s		--scheduler			Have old PVE kernels removed on a scheduled basis
--v		--version			Shows the current version of pvekclean
--r		--remove			Uninstalls pvekclean from the system
--h		--help				Show these options
+-k, --keep [number]   Keep the specified number of most recent PVE kernels on the system
+                      Can be used with -f or --force for non-interactive removal
+-f, --force           Force the removal of old PVE kernels without confirm prompts
+-rn, --remove-newer   Remove kernels that are newer than the currently running kernel
+-s, --scheduler       Have old PVE kernels removed on a scheduled basis
+-v, --version         Shows current version of $program_name
+-r, --remove          Uninstall $program_name from the system
+-d, --debug           Run the program in debug mode for testing without making system changes
+
 ```
 
 ## Developers
