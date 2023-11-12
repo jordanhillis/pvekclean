@@ -415,14 +415,19 @@ pve_kernel_clean() {
 # Function to check for updates
 check_for_update() {
 	if [ "$check_for_updates" == "true" ] && [ "$force_purge" == "false" ]; then
-		local remote_version=$(curl -s https://raw.githubusercontent.com/jordanhillis/pvekclean/master/version.txt)
+		local remote_version=$(curl -s -m 10 https://raw.githubusercontent.com/jordanhillis/pvekclean/master/version.txt || echo "")
+		# Unable to fetch remote version, so just skip the update check
+		if [ -z "$remote_version" ]; then
+			printf "${bold}[*]${reset} Failed to check for updates. Skipping update check.\n"
+			return
+		fi
 		if [ "$remote_version" != "$version" ]; then
 			printf "*** A new version $remote_version is available! ***\n"
 			printf "${bold}[*]${reset} Do you want to update? [y/N] "
 			read -n 1 -r
 			printf "\n"
 			if [[ $REPLY =~ ^[Yy]$ ]]; then
-				local updated_script=$(curl -s https://raw.githubusercontent.com/jordanhillis/pvekclean/master/pvekclean.sh)
+				local updated_script=$(curl -s -m 10 https://raw.githubusercontent.com/jordanhillis/pvekclean/master/pvekclean.sh)
 				# Check if the updated script contains the shebang line
 				if [[ "$updated_script" == "#!/bin/bash"* ]]; then
 					echo "$updated_script" > "$0"  # Overwrite the current script
