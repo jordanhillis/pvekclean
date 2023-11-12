@@ -35,22 +35,40 @@ PVE Kernel Cleaner is a program to compliment Proxmox Virtual Environment which 
 
 Before using this program you will need to have the following packages installed.
 * cron
+* curl
 
 To install all required packages enter the following command.
 
 ##### Debian:
 
 ```
-sudo apt-get install cron
+sudo apt-get install cron curl
 ```
 
 ## Installing
 
-To install PVE Kernel Cleaner please enter the following commands
+You can install PVE Kernel Cleaner using either Git or Curl. Choose the method that suits you best:
 
-```
+### Installation via Git
+
+1. Open your terminal.
+
+2. Enter the following commands one by one to install PVE Kernel Cleaner:
+
+```bash
 git clone https://github.com/jordanhillis/pvekclean.git
 cd pvekclean
+chmod +x pvekclean.sh
+./pvekclean.sh
+```
+### Installation via Curl
+
+1. Open your terminal.
+
+2. Use the following command to install PVE Kernel Cleaner:
+
+```bash
+curl -o pvekclean.sh https://raw.githubusercontent.com/jordanhillis/pvekclean/master/pvekclean.sh
 chmod +x pvekclean.sh
 ./pvekclean.sh
 ```
