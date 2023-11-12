@@ -36,8 +36,8 @@ boot_critical_percent="80"
 # To check for updates or not
 check_for_updates=true
 
-# Debug mode is for testing without actually removing anything
-debug=false
+# Dry run mode is for testing without actually removing anything
+dry_run=false
 
 # Current kernel
 current_kernel=$(uname -r)
@@ -110,8 +110,8 @@ echo -e " ${bg_black}${orange}                                              ${re
  ${bg_orange}${black}    ${bold}By Jordan Hillis [jordan@hillis.email]    ${reset}
 ___________________________________________
 "
-if [ "$debug" == "true" ]; then
-	printf "            ${bg_black}${orange}${bold}    DEBUG MODE IS ${green}ON    ${reset}\n\n"
+if [ "$dry_run" == "true" ]; then
+	printf "            ${bg_black}${orange}${bold}    DRY RUN MODE IS ${green}ON    ${reset}\n\n"
 fi
 }
 
@@ -165,7 +165,7 @@ show_usage() {
 		printf "  -s, --scheduler       Have old PVE kernels removed on a scheduled basis\n"
 		printf "  -v, --version         Shows current version of $program_name\n"
 		printf "  -r, --remove          Uninstall $program_name from the system\n"
-		printf "  -d, --debug           Run the program in debug mode for testing without making system changes\n"
+		printf "  -d, --dry-run         Run the program in dry run mode for testing without making system changes\n"
 		printf "___________________________________________\n\n"
 	fi
 }
@@ -239,6 +239,9 @@ scheduler() {
 # Installs PVE Kernel Cleaner for easier access
 install_program() {
 	force_pvekclean_update=false
+    local tmp_file="/tmp/.pvekclean_install_lock"
+    local install=false
+    local ask_interval=3600  # 1 hour in seconds	
 	# If pvekclean exists on the system
 	if [ -e /usr/local/sbin/$program_name ]; then
 		# Get current version of pvekclean
@@ -250,27 +253,32 @@ install_program() {
 			force_pvekclean_update=true
 		fi
 	fi
-	# If pvekclean does not exist on the system or force_purge is enabled
-	if [ ! -f /usr/local/sbin/$program_name ] || [ $force_pvekclean_update == true ]; then
-		# Ask user if we can install it to their system
-		if [ $force_purge == true ]; then
-			REPLY="n"
-		else
-			# Ask if we can install it
-			printf "${bold}[-]${reset} Can we install PVE Kernel Cleaner to your /usr/local/sbin for easier access [y/N] " 
-			read -n 1 -r
-			printf "\n"
-		fi
-		# User agrees to have it installed
-		if [[ $REPLY =~ ^[Yy]$ ]]; then
-			# Copy the script to /usr/local/sbin and set execution permissions
-			cp $0 /usr/local/sbin/$program_name
-			chmod +x /usr/local/sbin/$program_name
-			# Tell user how to use it
-			printf "${bold}[*]${reset} Installed PVE Kernel Cleaner to /usr/local/sbin/$program_name\n"
-			printf "${bold}[*]${reset} Run the command \"$program_name\" to begin using this program.\n"
-			printf "${bold}[-]${reset} Run the command \"$program_name -r\" to remove this program at any time.\n"
-			exit 0
+    # Check if the file doesn't exist or it's been over an hour since the last ask
+    if [ ! -e "$tmp_file" ] || [ ! -f "$tmp_file" ] || [ $(( $(date +%s) - $(cat "$tmp_file") )) -gt $ask_interval ] || [ $force_pvekclean_update == true ]; then	
+		# If pvekclean does not exist on the system or force_purge is enabled
+		if [ ! -f /usr/local/sbin/$program_name ] || [ $force_pvekclean_update == true ]; then
+			# Ask user if we can install it to their system
+			if [ $force_purge == true ]; then
+				REPLY="n"
+			else
+				# Update the timestamp in the file to record the time of the last ask
+				echo $(date +%s) > "$tmp_file"
+				# Ask if we can install it
+				printf "${bold}[-]${reset} Can we install PVE Kernel Cleaner to your /usr/local/sbin for easier access [y/N] " 
+				read -n 1 -r
+				printf "\n"
+			fi
+			# User agrees to have it installed
+			if [[ $REPLY =~ ^[Yy]$ ]]; then
+				# Copy the script to /usr/local/sbin and set execution permissions
+				cp $0 /usr/local/sbin/$program_name
+				chmod +x /usr/local/sbin/$program_name
+				# Tell user how to use it
+				printf "${bold}[*]${reset} Installed PVE Kernel Cleaner to /usr/local/sbin/$program_name\n"
+				printf "${bold}[*]${reset} Run the command \"$program_name\" to begin using this program.\n"
+				printf "${bold}[-]${reset} Run the command \"$program_name -r\" to remove this program at any time.\n"
+				exit 0
+			fi
 		fi
 	fi
 }
@@ -384,7 +392,7 @@ pve_kernel_clean() {
 			do
 				printf "${bold}[-]${reset} Removing kernel: $kernel..."
 				# Purge the old kernels via apt and suppress output
-				if [ "$debug" != "true" ]; then
+				if [ "$dry_run" != "true" ]; then
 					/usr/bin/apt purge -y pve-kernel-$kernel > /dev/null 2>&1
 					/usr/bin/apt purge -y proxmox-kernel-$kernel > /dev/null 2>&1
 					/usr/bin/apt purge -y pve-kernel-${kernel%-pve} > /dev/null 2>&1
@@ -397,7 +405,7 @@ pve_kernel_clean() {
 			done
 			printf "${bold}[*]${reset} Updating GRUB..."
 			# Update grub after kernels are removed, suppress output
-			if [ "$debug" != "true" ]; then
+			if [ "$dry_run" != "true" ]; then
 				/usr/sbin/update-grub > /dev/null 2>&1
 			fi
 			printf "DONE!\n"
@@ -502,8 +510,8 @@ while [[ $# -gt 0 ]]; do
 			shift
 			continue
 		;;	
-		-d|--debug)
-			debug=true
+		-d|--dry-run)
+			dry_run=true
 			shift
 			continue
 		;;				
