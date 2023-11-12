@@ -36,13 +36,14 @@ PVE Kernel Cleaner is a program to compliment Proxmox Virtual Environment which 
 Before using this program you will need to have the following packages installed.
 * cron
 * curl
+* git
 
 To install all required packages enter the following command.
 
 ##### Debian:
 
 ```
-sudo apt-get install cron curl
+sudo apt-get install cron curl git
 ```
 
 ## Installing
