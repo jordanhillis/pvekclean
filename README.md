@@ -99,27 +99,41 @@ Example of usage:
 ## Usage Examples:
 Here are some common ways to use PVE Kernel Cleaner:
 
-**Remove Old Kernels Non-Interactively:**
+* **Remove Old Kernels Non-Interactively:**
 ```bash
 pvekclean -f
 ```
-**Set Number of Kernels to Keep:**
+<sub> This command removes old PVE kernels without requiring user confirmation.</sub>
+
+* **Set Number of Kernels to Keep:**
 ```bash
 pvekclean -k 3
 ```
-**Force Remove Old Kernels While Keeping a Certain Number:**
+<sub>This command specifies the number of most recent PVE kernels to keep on the system.</sub>
+
+* **Force Remove Old Kernels While Keeping a Certain Number:**
 ```bash
 pvekclean -f -k 3
 ```
-**Remove Newer Kernels and Keep a Specific Number:**
+<sub>This command forces the removal of old PVE kernels while retaining a specific number of the most recent ones.</sub>
+
+* **Remove Newer Kernels and Keep a Specific Number:**
 ```bash
 pvekclean -rn -k 2
 ```
-**Perform a Dry Run without Making Changes:**
+<sub>This command removes newer PVE kernels and keeps a specified number of the most recent ones.</sub>
+
+* **Schedule Regular Kernel Removal:**
+```bash
+pvekclean -s
+```
+<sub>This command sets up PVE Kernel Cleaner to remove old PVE kernels on a scheduled basis. You can configure the schedule according to your needs.</sub>
+
+* **Perform a Dry Run without Making Changes:**
 ```bash
 pvekclean -d
 ```
-This command runs PVE Kernel Cleaner in dry run mode, simulating actions without actually removing any kernels or making changes to your system. It's useful for testing and understanding what the script would do.
+<sub>This command runs PVE Kernel Cleaner in dry run mode, simulating actions without actually removing any kernels or making changes to your system. It's useful for testing and understanding what the script would do.</sub>
 
 ## Developers
 
