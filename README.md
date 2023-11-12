@@ -2,8 +2,10 @@
 
 Easily remove old/unused PVE kernels on your Proxmox VE system
 
-[![Build Status](https://travis-ci.org/jordanhillis/pvekclean.svg?branch=master)](https://travis-ci.org/jordanhillis/pvekclean)
+[![Version](https://img.shields.io/badge/Version-v1.0-brightgreen)](https://github.com/jordanhillis/pvekclean)
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
+![Updated](https://img.shields.io/github/last-commit/jordanhillis/pvekclean)
+![Debian](https://img.shields.io/badge/-Debian-red)
 
 ### What is PVE Kernel Cleaner?
 
