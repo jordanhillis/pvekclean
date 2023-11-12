@@ -46,7 +46,7 @@ current_kernel=$(uname -r)
 program_name="pvekclean"
 
 # Version
-version="1.3"
+version="2.0"
 
 # Text Colors
 black="\e[38;2;0;0;0m"
