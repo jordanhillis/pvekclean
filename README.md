@@ -76,6 +76,26 @@ Example of usage:
 
 ```
 
+## Usage Examples:
+Here are some common ways to use PVE Kernel Cleaner:
+
+**Remove Old Kernels Non-Interactively:**
+```bash
+pvekclean -f
+```
+**Set Number of Kernels to Keep:**
+```bash
+pvekclean -k 3
+```
+**Force Remove Old Kernels While Keeping a Certain Number:**
+```bash
+pvekclean -f -k 3
+```
+**Remove Newer Kernels and Keep a Specific Number:**
+```bash
+pvekclean -rn -k 2
+```
+
 ## Developers
 
 * **Jordan Hillis** - *Lead Developer*
