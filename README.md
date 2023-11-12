@@ -57,8 +57,7 @@ chmod +x pvekclean.sh
 
 ## Updating
 
-To update PVE Kernel Cleaner please run the same commands as described in the "Installing" section.
-
+PVE Kernel Cleaner checks for updates automatically when you run it. If an update is available, you'll be notified within the program. Simply follow the on-screen instructions to install the update, and you're all set with the latest version!
 
 ## Usage
 
