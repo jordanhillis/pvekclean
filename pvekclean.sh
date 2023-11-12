@@ -317,6 +317,7 @@ pve_kernel_clean() {
 	# Display percentage used and available space left
 	printf "at ${boot_info[4]}%% capacity (${boot_info[3]} free)\n"
 	# For each kernel that was found via dpkg
+	current_kernel_passed=false
 	for kernel in $kernels
 	do
 		# Only if not removing newer kernels and kernel matches the current kernel
@@ -324,6 +325,7 @@ pve_kernel_clean() {
 			if [ "$remove_newer" == "false" ]; then
 				break
 			else
+				current_kernel_passed=true
 				continue
 			fi
 		# Add kernel to the list of removal since it is old
@@ -331,6 +333,10 @@ pve_kernel_clean() {
 			kernels_to_remove+=("$kernel")  # Add the kernel to the array
 		fi
 	done
+	# If remove_newer is set keep the last kernel installed as its newest
+	if [ "$remove_newer" == "true" ] && [ "$current_kernel_passed" == "true" ] && [ ${#kernels_to_remove[@]} -gt 0 ]; then
+		unset kernels_to_remove[-1]
+	fi
 	# If keep_kernels is set we remove this number from the array to remove
 	if [[ -n "$keep_kernels" ]] && [[ "$keep_kernels" =~ ^[0-9]+$ ]]; then
 		if [ $keep_kernels -gt 0 ]; then
