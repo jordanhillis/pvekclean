@@ -166,6 +166,7 @@ show_usage() {
 		printf "  -s, --scheduler       Have old PVE kernels removed on a scheduled basis\n"
 		printf "  -v, --version         Shows current version of $program_name\n"
 		printf "  -r, --remove          Uninstall $program_name from the system\n"
+		printf "  -i, --install         Install $program_name to the system\n"
 		printf "  -d, --dry-run         Run the program in dry run mode for testing without making system changes\n"
 		printf "___________________________________________\n\n"
 	fi
@@ -255,9 +256,9 @@ install_program() {
 		fi
 	fi
     # Check if the file doesn't exist or it's been over an hour since the last ask
-    if [ ! -e "$tmp_file" ] || [ ! -f "$tmp_file" ] || [ $(( $(date +%s) - $(cat "$tmp_file") )) -gt $ask_interval ] || [ $force_pvekclean_update == true ]; then	
+    if [ ! -e "$tmp_file" ] || [ ! -f "$tmp_file" ] || [ $(( $(date +%s) - $(cat "$tmp_file") )) -gt $ask_interval ] || [ $force_pvekclean_update == true ] || [ -n "$force_pvekclean_install" ]; then	
 		# If pvekclean does not exist on the system or force_purge is enabled
-		if [ ! -f /usr/local/sbin/$program_name ] || [ $force_pvekclean_update == true ]; then
+		if [ ! -f /usr/local/sbin/$program_name ] || [ $force_pvekclean_update == true ] || [ -n "$force_pvekclean_install" ]; then
 			# Ask user if we can install it to their system
 			if [ $force_purge == true ]; then
 				REPLY="n"
@@ -281,6 +282,9 @@ install_program() {
 				exit 0
 			fi
 		fi
+	fi
+	if [ -n "$force_pvekclean_install" ]; then
+		exit 0
 	fi
 }
 
@@ -476,6 +480,11 @@ main() {
 
 while [[ $# -gt 0 ]]; do
 	case "$1" in
+		-i|--install )
+			force_pvekclean_install=true
+			main
+			install_program
+		;;
 		-r|--remove )
 			main
 			uninstall_program
