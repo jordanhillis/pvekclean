@@ -389,6 +389,8 @@ pve_kernel_clean() {
 					/usr/bin/apt purge -y proxmox-kernel-$kernel > /dev/null 2>&1
 					/usr/bin/apt purge -y pve-kernel-${kernel%-pve} > /dev/null 2>&1
 					/usr/bin/apt purge -y proxmox-kernel-${kernel%-pve} > /dev/null 2>&1
+					/usr/bin/apt purge -y pve-headers-${kernel%-pve} > /dev/null 2>&1
+					/usr/bin/apt purge -y proxmox-headers-${kernel%-pve} > /dev/null 2>&1
 				fi
 				sleep 1			
 				printf "DONE!\n"
