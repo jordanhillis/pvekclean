@@ -111,7 +111,8 @@ echo -e " ${bg_black}${orange}                                              ${re
 ___________________________________________
 "
 if [ "$dry_run" == "true" ]; then
-	printf "            ${bg_black}${orange}${bold}    DRY RUN MODE IS ${green}ON    ${reset}\n\n"
+	printf "        ${bg_yellow}${black}${bold}    DRY RUN MODE IS: ${red}ON    ${reset}\n"
+	printf "${bg_green}${bold}${black} This is what the script would do in regular mode ${reset}\n${bg_green}${bold}${black}      (but without making actual changes)         ${reset}\n\n"
 fi
 }
 
