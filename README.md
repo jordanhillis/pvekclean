@@ -71,9 +71,10 @@ Example of usage:
 -f, --force           Force the removal of old PVE kernels without confirm prompts
 -rn, --remove-newer   Remove kernels that are newer than the currently running kernel
 -s, --scheduler       Have old PVE kernels removed on a scheduled basis
--v, --version         Shows current version of $program_name
--r, --remove          Uninstall $program_name from the system
--d, --debug           Run the program in debug mode for testing without making system changes
+-v, --version         Shows current version of pvekclean
+-r, --remove          Uninstall pvekclean from the system
+-i, --install         Install pvekclean to the system
+-d, --dry-run         Run the program in dry run mode for testing without making system changes
 
 ```
 
