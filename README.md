@@ -97,6 +97,11 @@ pvekclean -f -k 3
 ```bash
 pvekclean -rn -k 2
 ```
+**Perform a Dry Run without Making Changes:**
+```bash
+pvekclean -d
+```
+This command runs PVE Kernel Cleaner in dry run mode, simulating actions without actually removing any kernels or making changes to your system. It's useful for testing and understanding what the script would do.
 
 ## Developers
 
