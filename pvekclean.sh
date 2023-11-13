@@ -315,7 +315,7 @@ uninstall_program() {
 # PVE Kernel Clean main function
 pve_kernel_clean() {
 	# Find all the PVE kernels on the system
-	kernels=$(dpkg --list | grep -E '(pve-kernel|proxmox-kernel)-.*-pve' | awk '{print $2}' | sed -n 's/\(pve\|proxmox\)-kernel-\(.*\)/\2/p' | sort -V)
+	kernels=$(dpkg --list | grep -E '(pve-kernel|proxmox-kernel)-[0-9].*' | awk '{print $2}' | sed -n 's/\(pve\|proxmox\)-kernel-\(.*\)/\2/p' | sort -V)
 	# List of kernels that will be removed (adds them as the script goes on)
 	kernels_to_remove=()
 	# Check the /boot used
@@ -333,6 +333,10 @@ pve_kernel_clean() {
 	current_kernel_passed=false
 	for kernel in $kernels
 	do
+		# Check if the kernel is already in the array
+		if [[ " ${kernels_to_remove[@]} " =~ " $kernel " ]]; then
+			continue  # Skip adding it again
+		fi
 		# Only if not removing newer kernels and kernel matches the current kernel
 		if [ "$(echo $kernel | grep "$current_kernel")" ]; then
 			if [ "$remove_newer" == "false" ]; then
