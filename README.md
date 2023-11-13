@@ -14,7 +14,7 @@ PVE Kernel Cleaner is a program to compliment Proxmox Virtual Environment which 
 
 ## Example Usage
 
-![PVEKCLEAN Example](https://raw.githubusercontent.com/jordanhillis/pvekclean/master/assets/example-2.0.jpg)
+![PVEKCLEAN Example](https://raw.githubusercontent.com/jordanhillis/pvekclean/master/assets/example-2.0.2.png)
 
 ## Features
 
