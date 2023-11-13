@@ -46,7 +46,7 @@ current_kernel=$(uname -r)
 program_name="pvekclean"
 
 # Version
-version="2.0"
+version="2.0.1"
 
 # Text Colors
 black="\e[38;2;0;0;0m"
@@ -99,19 +99,19 @@ version() {
 
 # Header for PVE Kernel Cleaner
 header_info() {
-echo -e " ${bg_black}${orange}                                              ${reset}
- ${bg_black}${orange}  █▀▀█ ▀█ █▀ █▀▀   █ █ █▀▀ █▀▀█ █▀▀▄ █▀▀ █    ${reset}
- ${bg_black}${orange}  █  █  █▄█  █▀▀   █▀▄ █▀▀ █▄▄▀ █  █ █▀▀ █    ${reset} 
- ${bg_black}${orange}  █▀▀▀   ▀   ▀▀▀   ▀ ▀ ▀▀▀ ▀ ▀▀ ▀  ▀ ▀▀▀ ▀▀▀  ${reset}
- ${bg_black}${orange}                                              ${reset}
- ${bg_black}${white}  █▀▀ █   █▀▀ █▀▀█ █▀▀▄ █▀▀ █▀▀█              ${reset}
- ${bg_black}${white}  █   █   █▀▀ █▄▄█ █  █ █▀▀ █▄▄▀   ${white}${bold}⎦˚◡˚⎣ v$version ${reset}
- ${bg_black}${white}  ▀▀▀ ▀▀▀ ▀▀▀ ▀  ▀ ▀  ▀ ▀▀▀ ▀ ▀▀              ${reset}
- ${bg_orange}${black}    ${bold}By Jordan Hillis [jordan@hillis.email]    ${reset}
+echo -e " ${bg_black}${orange}                                                ${reset}
+ ${bg_black}${orange}   █▀▀█ ▀█ █▀ █▀▀   █ █ █▀▀ █▀▀█ █▀▀▄ █▀▀ █     ${reset}
+ ${bg_black}${orange}   █  █  █▄█  █▀▀   █▀▄ █▀▀ █▄▄▀ █  █ █▀▀ █     ${reset} 
+ ${bg_black}${orange}   █▀▀▀   ▀   ▀▀▀   ▀ ▀ ▀▀▀ ▀ ▀▀ ▀  ▀ ▀▀▀ ▀▀▀   ${reset}
+ ${bg_black}${orange}                                                ${reset}
+ ${bg_black}${white}   █▀▀ █   █▀▀ █▀▀█ █▀▀▄ █▀▀ █▀▀█               ${reset}
+ ${bg_black}${white}   █   █   █▀▀ █▄▄█ █  █ █▀▀ █▄▄▀  ${white}${bold}⎦˚◡˚⎣ v$version ${reset}
+ ${bg_black}${white}   ▀▀▀ ▀▀▀ ▀▀▀ ▀  ▀ ▀  ▀ ▀▀▀ ▀ ▀▀               ${reset}
+ ${bg_orange}${black}      ${bold}By Jordan Hillis [jordan@hillis.email]    ${reset}
 ___________________________________________
 "
 if [ "$dry_run" == "true" ]; then
-	printf "        ${bg_yellow}${black}${bold}    DRY RUN MODE IS: ${red}ON    ${reset}\n"
+	printf "          ${bg_yellow}${black}${bold}    DRY RUN MODE IS: ${red}ON    ${reset}\n"
 	printf "${bg_green}${bold}${black} This is what the script would do in regular mode ${reset}\n${bg_green}${bold}${black}      (but without making actual changes)         ${reset}\n\n"
 fi
 }
