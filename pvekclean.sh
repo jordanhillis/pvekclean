@@ -421,14 +421,18 @@ pve_kernel_clean() {
 					/usr/bin/apt purge -y proxmox-headers-${kernel%-pve} > /dev/null 2>&1
 				fi
 				sleep 1			
-				printf "DONE!\n"
+				printf "${bold}${green}DONE!${reset}\n"
 			done
 			printf "${bold}[*]${reset} Updating GRUB..."
 			# Update grub after kernels are removed, suppress output
 			if [ "$dry_run" != "true" ]; then
 				/usr/sbin/update-grub > /dev/null 2>&1
 			fi
-			printf "DONE!\n"
+			printf "${bold}${green}DONE!${reset}\n"
+			# Get information about the /boot folder
+			boot_info=($(echo $(df -Ph | grep /boot | tail -1) | sed 's/%//g'))
+			# Show information about the /boot
+			printf "${bold}[-]${reset} ${bold}Boot Disk:${reset} ${boot_info[4]}%% full [${boot_info[2]}/${boot_info[1]} used, ${boot_info[3]} free] \n"
 			# Script finished successfully
 			printf "${bold}[-]${reset} Have a nice $(timeGreeting) ⎦˚◡˚⎣\n"
 		# User wishes to not remove the kernels above, exit
