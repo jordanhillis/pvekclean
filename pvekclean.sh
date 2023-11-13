@@ -120,6 +120,7 @@ fi
 kernel_info() {
 	# Lastest kernel installed
 	latest_kernel=$(dpkg --list | awk '/proxmox-kernel-.*-pve/{print $2}' | sed -n 's/proxmox-kernel-//p' | sort -V | tail -n 1 | tr -d '[:space:]')
+	[ -z "$latest_kernel" ] && latest_kernel="N/A"
 	# Show operating system used
 	printf " ${bold}OS:${reset} $(cat /etc/os-release | grep "PRETTY_NAME" | sed 's/PRETTY_NAME=//g' | sed 's/["]//g' | awk '{print $0}')\n"
 	# Get information about the /boot folder
@@ -132,7 +133,7 @@ kernel_info() {
 	if [[ "$current_kernel" == *"pve"* ]]; then
 		# Check if we are running the latest kernel, if not warn
 		if [[ "$latest_kernel" != *"$current_kernel"* ]]; then
-			printf " ${bold}Latest Kernel:${reset} $latest_kernel\n"
+			printf " ${bold}Latest Kernel:${reset} ${latest_kernel}\n"
 		fi
 	# Warn them that they aren't on a PVE kernel
 	else
@@ -315,7 +316,7 @@ uninstall_program() {
 # PVE Kernel Clean main function
 pve_kernel_clean() {
 	# Find all the PVE kernels on the system
-	kernels=$(dpkg --list | grep -E '(pve-kernel|proxmox-kernel)-[0-9].*' | awk '{print $2}' | sed -n 's/\(pve\|proxmox\)-kernel-\(.*\)/\2/p' | sort -V)
+	kernels=$(dpkg --list | grep -E "(pve-kernel|proxmox-kernel)-[0-9].*" | grep -E "Kernel Image" | grep -vE "${latest_kernel%-pve}|series|transitional" | awk '{print $2}' | sed -n 's/\(pve\|proxmox\)-kernel-\(.*\)/\2/p' | sort -V)
 	# List of kernels that will be removed (adds them as the script goes on)
 	kernels_to_remove=()
 	# Check the /boot used
