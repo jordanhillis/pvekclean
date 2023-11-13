@@ -116,6 +116,23 @@ if [ "$dry_run" == "true" ]; then
 fi
 }
 
+# Function to get drive status based on usage percentage
+get_drive_status() {
+	local usage=$1
+    # Check if the input is a number
+    if ! [[ $usage =~ ^[0-9]+$ ]]; then
+        echo "${bold}N/A${reset}"
+    else
+		if (( usage <= 50 )); then
+			echo "${bold}${green}Healthy${reset}"
+		elif (( usage > 50 && usage <= 75 )); then
+			echo "${bold}${orange}Moderate Capacity${reset}"
+		else
+			echo "${bold}${red}Critically Full${reset}"
+		fi
+	fi
+}
+
 # Show current system information
 kernel_info() {
 	# Lastest kernel installed
@@ -319,17 +336,10 @@ pve_kernel_clean() {
 	kernels=$(dpkg --list | grep -E "(pve-kernel|proxmox-kernel)-[0-9].*" | grep -E "Kernel Image" | grep -vE "${latest_kernel%-pve}|series|transitional" | awk '{print $2}' | sed -n 's/\(pve\|proxmox\)-kernel-\(.*\)/\2/p' | sort -V)
 	# List of kernels that will be removed (adds them as the script goes on)
 	kernels_to_remove=()
-	# Check the /boot used
-	printf "${bold}[*]${reset} Boot disk space used is "
-	# Warn user when the /boot is critically full
-	if [[ "${boot_info[4]}" -ge "$boot_critical_percent" ]]; then
-		printf "${bold}${orange}critically full${reset} "
-	# Tell them if it is at an acceptable percentage
-	else
-		printf "${bold}${green}healthy${reset} "
-	fi
-	# Display percentage used and available space left
-	printf "at ${boot_info[4]}%% capacity (${boot_info[3]} free)\n"
+	# Boot drive status
+	boot_drive_status=$(get_drive_status ${boot_info[4]})
+	# Show space used, status and free space available
+	printf "${bold}[*]${reset} Boot disk space used is ${bold}${boot_drive_status}${reset} at ${boot_info[4]}%% capacity (${boot_info[3]} free)\n"
 	# For each kernel that was found via dpkg
 	current_kernel_passed=false
 	for kernel in $kernels
@@ -433,12 +443,19 @@ pve_kernel_clean() {
 # Function to check for updates
 check_for_update() {
 	if [ "$check_for_updates" == "true" ] && [ "$force_purge" == "false" ]; then
-		local remote_version=$(curl -s -m 10 https://raw.githubusercontent.com/jordanhillis/pvekclean/master/version.txt || echo "")
+		# Get latest version number
+		local remote_version=$(curl -s -m 10 https://raw.githubusercontent.com/jordanhillis/pvekclean/master/version.txt | tr -d '\n' || echo "")
 		# Unable to fetch remote version, so just skip the update check
 		if [ -z "$remote_version" ]; then
 			printf "${bold}[*]${reset} Failed to check for updates. Skipping update check.\n"
 			return
 		fi
+		# Validate the remote_version format using a regex
+		if [[ ! "$remote_version" =~ ^[0-9]+(\.[0-9]+)*$ ]]; then
+			printf "${bold}[*]${reset} Invalid remote version format: ${bold}${orange}$remote_version${reset}. Skipping update check.\n"
+			return
+		fi
+		# If version isn't the same
 		if [ "$remote_version" != "$version" ]; then
 			printf "*** A new version $remote_version is available! ***\n"
 			printf "${bold}[*]${reset} Do you want to update? [y/N] "
