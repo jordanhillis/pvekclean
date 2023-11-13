@@ -456,7 +456,7 @@ check_for_update() {
 }
 
 timeGreeting() {
-     h=$(date +%H)
+    h=$(date +%k)  # Use %k to get the hour as a decimal number (no leading zero)
     ((h >= 5 && h < 12)) && echo "morning" && return
     ((h >= 12 && h < 17)) && echo "afternoon" && return
     ((h >= 17 && h < 21)) && echo "evening" && return
