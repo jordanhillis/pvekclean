@@ -46,7 +46,7 @@ current_kernel=$(uname -r)
 program_name="pvekclean"
 
 # Version
-version="2.0.1"
+version="2.0.2"
 
 # Text Colors
 black="\e[38;2;0;0;0m"
@@ -352,9 +352,9 @@ pve_kernel_clean() {
 		fi
 	done
 	# If remove_newer is set keep the last kernel installed as its newest
-	if [ "$remove_newer" == "true" ] && [ "$current_kernel_passed" == "true" ] && [ ${#kernels_to_remove[@]} -gt 0 ]; then
-		unset kernels_to_remove[-1]
-	fi
+	# if [ "$remove_newer" == "true" ] && [ "$current_kernel_passed" == "true" ] && [ ${#kernels_to_remove[@]} -gt 0 ]; then
+	# 	unset kernels_to_remove[-1]
+	# fi
 	# If keep_kernels is set we remove this number from the array to remove
 	if [[ -n "$keep_kernels" ]] && [[ "$keep_kernels" =~ ^[0-9]+$ ]]; then
 		if [ $keep_kernels -gt 0 ]; then
